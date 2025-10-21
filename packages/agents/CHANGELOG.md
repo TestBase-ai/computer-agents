@@ -1,5 +1,17 @@
 # @openai/agents
 
+## 0.3.0
+
+### Minor Changes
+
+- chore: hotfix v0.2.1 - fix broken imports
+
+### Patch Changes
+
+- Updated dependencies
+  - computer-agents-core@0.3.0
+  - computer-agents-openai@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

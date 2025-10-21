@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import type * as CoreTypes from '@testbase/agents-core';
-import type { OpenAIProvider as OpenAIProviderType } from '@testbase/agents-openai';
+import type * as CoreTypes from 'computer-agents-core';
+import type { OpenAIProvider as OpenAIProviderType } from 'computer-agents-openai';
 
 // In CommonJS, require and __dirname are already available
 declare const require: NodeRequire;
@@ -18,7 +18,7 @@ function getCore(): typeof CoreTypes {
     return coreModule;
   }
   try {
-    coreModule = require('@testbase/agents-core') as typeof CoreTypes;
+    coreModule = require('computer-agents-core') as typeof CoreTypes;
   } catch {
     const localPath = resolve(__dirname, '../../agents-core/dist/index.js');
     coreModule = require(localPath) as typeof CoreTypes;
@@ -37,7 +37,7 @@ async function loadOpenAIProvider(): Promise<typeof OpenAIProviderType> {
 
   openAIProviderCtorPromise = (async () => {
     try {
-      const mod = await dynamicImport('@testbase/agents-openai');
+      const mod = await dynamicImport('computer-agents-openai');
       return mod.OpenAIProvider as typeof OpenAIProviderType;
     } catch {
       const localUrl = pathToFileURL(
@@ -86,4 +86,4 @@ export async function run<
   return coreRun(agent, input, options as any);
 }
 
-export * from '@testbase/agents-core';
+export * from 'computer-agents-core';
