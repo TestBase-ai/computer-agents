@@ -3,8 +3,8 @@
   "name": "computer-agents",
   "version": "0.0.1",
   "scripts": {
-    "build": "pnpm --filter computer-agents-core build",
-    "clean": "rm -rf node_modules && pnpm --filter computer-agents-core exec rm -rf dist",
+    "build": "pnpm --filter computer-agents-core build && pnpm --filter computer-agents-openai build && pnpm --filter computer-agents build",
+    "clean": "rm -rf node_modules && pnpm --filter computer-agents-core exec rm -rf dist && pnpm --filter computer-agents-openai exec rm -rf dist && pnpm --filter computer-agents exec rm -rf dist",
     "test": "pnpm --filter computer-agents-core test"
   },
   "devDependencies": {

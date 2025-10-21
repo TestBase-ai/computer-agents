@@ -115,13 +115,22 @@ export class CodexClient {
   /**
    * Lazy-load the Codex SDK (ESM-only package).
    * Uses dynamic import for CJS compatibility.
+   *
+   * Note: We use eval to preserve the dynamic import() in the compiled output
+   * when targeting CommonJS. This allows Node.js to load ESM-only packages
+   * from CommonJS modules.
    */
   private async getCodexSdk(): Promise<any> {
     if (this.codexSdkPromise) {
       return this.codexSdkPromise;
     }
 
-    this.codexSdkPromise = import('@openai/codex-sdk').then((mod) => {
+    // Use eval to preserve dynamic import in CommonJS output
+    // This prevents TypeScript from converting import() to require()
+    // The indirect eval call ensures it runs in the global scope
+    const importFn = (0, eval)("(specifier) => import(specifier)");
+
+    this.codexSdkPromise = importFn('@openai/codex-sdk').then((mod: any) => {
       this.codex = new mod.Codex();
       return this.codex;
     });

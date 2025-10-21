@@ -15,6 +15,13 @@ export interface LocalRuntimeConfig {
    * Enable debug logging
    */
   debug?: boolean;
+
+  /**
+   * Skip git repository check for workspace.
+   * Set to true to allow execution in non-git directories.
+   * @default true (allows execution in any directory)
+   */
+  skipGitRepoCheck?: boolean;
 }
 
 /**
@@ -83,7 +90,7 @@ export class LocalRuntime implements Runtime {
         threadId: sessionId,
         model,
         mcpServers, // Pass unified MCP server configs
-        skipGitRepoCheck: false, // Require git repo for safety
+        skipGitRepoCheck: this.config.skipGitRepoCheck ?? true, // Default: allow non-git directories
         sandboxMode: 'danger-full-access', // Required for file changes
       });
 

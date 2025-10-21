@@ -1,6 +1,6 @@
 # computer-agents
 
-[![npm version](https://badge.fury.io/js/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
+[![npm version](https://img.shields.io/npm/v/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Build computer-use agents that write code, run tests, and deploy apps. Seamless local and cloud execution with automatic session continuity.

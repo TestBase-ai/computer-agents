@@ -1,5 +1,38 @@
 # @openai/agents-core
 
+## 0.4.4
+
+### Patch Changes
+
+- **Docs**: Update README badge to use shields.io for faster updates
+
+## 0.4.3
+
+### Patch Changes
+
+- **Fix**: Default `skipGitRepoCheck` to true in LocalRuntime to allow execution in non-git directories
+- **Feature**: Add `skipGitRepoCheck` configuration option to LocalRuntimeConfig
+
+## 0.4.2
+
+### Patch Changes
+
+- **Fix**: Replace workspace dependencies with actual version numbers for npm compatibility
+
+## 0.4.1
+
+### Patch Changes
+
+- **Fix**: Made Agent `name` parameter optional. If not provided, generates default name like `llm-agent-{timestamp}` or `computer-agent-{timestamp}`
+- **Fix**: Fixed package exports to only reference CommonJS builds (removed non-existent .mjs references)
+- **Fix**: Fixed @openai/codex-sdk loading in CommonJS builds using eval-based dynamic import to support ESM-only dependencies
+
+## 0.4.0
+
+### Minor Changes
+
+- fix versioning errors
+
 ## 0.3.0
 
 ### Minor Changes

@@ -328,7 +328,7 @@ export type AgentOptions<
   TOutput extends AgentOutputType = TextOutput,
 > = Expand<
   {
-    name: string;
+    name?: string;
   } & Partial<Omit<AgentConfiguration<TContext, TOutput>, 'name'>>
 >;
 
@@ -361,7 +361,7 @@ export type AgentConfigWithHandoffs<
   TOutput extends AgentOutputType,
   Handoffs extends readonly (Agent<any, any> | Handoff<any, any>)[],
 > = {
-  name: string;
+  name?: string;
   agentType?: AgentType;
   workspace?: string;
   sessionId?: string;
@@ -459,10 +459,14 @@ export class Agent<
 
   constructor(config: AgentOptions<TContext, TOutput>) {
     super();
-    if (typeof config.name !== 'string' || config.name.trim() === '') {
-      throw new UserError('Agent must have a name.');
+    // Generate default name if not provided
+    if (!config.name || config.name.trim() === '') {
+      const agentType = config.agentType || 'llm';
+      const timestamp = Date.now().toString(36);
+      this.name = `${agentType}-agent-${timestamp}`;
+    } else {
+      this.name = config.name;
     }
-    this.name = config.name;
     this.runtime = config.runtime;
     this.instructions = config.instructions ?? Agent.DEFAULT_MODEL_PLACEHOLDER;
     this.prompt = config.prompt;

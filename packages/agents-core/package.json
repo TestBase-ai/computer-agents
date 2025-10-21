@@ -1,8 +1,8 @@
 {
   "name": "computer-agents-core",
-  "repository": "https://github.com/testbasehq/computer-agents",
-  "homepage": "https://github.com/testbasehq/computer-agents",
-  "version": "0.3.0",
+  "repository": "https://github.com/TestBase-ai/computer-agents",
+  "homepage": "https://testbase.ai/computer-agents",
+  "version": "0.4.4",
   "description": "Core implementation for computer-agents SDK. Build computer-use agents with seamless local and cloud execution.",
   "author": "Testbase",
   "main": "dist/index.js",
@@ -17,48 +17,39 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "default": "./dist/index.js"
     },
     "./model": {
       "types": "./dist/model.d.ts",
-      "require": "./dist/model.js",
-      "import": "./dist/model.mjs"
+      "default": "./dist/model.js"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
-      "require": "./dist/utils/index.js",
-      "import": "./dist/utils/index.mjs"
+      "default": "./dist/utils/index.js"
     },
     "./extensions": {
       "types": "./dist/extensions/index.d.ts",
-      "require": "./dist/extensions/index.js",
-      "import": "./dist/extensions/index.mjs"
+      "default": "./dist/extensions/index.js"
     },
     "./types": {
       "types": "./dist/types/index.d.ts",
-      "require": "./dist/types/index.js",
-      "import": "./dist/types/index.mjs"
+      "default": "./dist/types/index.js"
     },
     "./_shims": {
       "workerd": {
         "types": "./dist/shims/shims-workerd.d.ts",
-        "require": "./dist/shims/shims-workerd.js",
-        "import": "./dist/shims/shims-workerd.mjs"
+        "default": "./dist/shims/shims-workerd.js"
       },
       "browser": {
         "types": "./dist/shims/shims-browser.d.ts",
-        "require": "./dist/shims/shims-browser.js",
-        "import": "./dist/shims/shims-browser.mjs"
+        "default": "./dist/shims/shims-browser.js"
       },
       "node": {
         "types": "./dist/shims/shims-node.d.ts",
-        "require": "./dist/shims/shims-node.js",
-        "import": "./dist/shims/shims-node.mjs"
+        "default": "./dist/shims/shims-node.js"
       },
       "types": "./dist/shims/shims.d.ts",
-      "require": "./dist/shims/shims.js",
-      "import": "./dist/shims/shims.mjs"
+      "default": "./dist/shims/shims.js"
     }
   },
   "keywords": [

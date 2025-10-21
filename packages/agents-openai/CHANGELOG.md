@@ -1,5 +1,46 @@
 # @openai/agents-openai
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies
+  - computer-agents-core@0.4.4
+
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies
+  - computer-agents-core@0.4.3
+
+## 0.4.2
+
+### Patch Changes
+
+- **Fix**: Replace workspace dependencies with actual version numbers for npm compatibility
+- Updated dependencies
+  - computer-agents-core@0.4.2
+
+## 0.4.1
+
+### Patch Changes
+
+- **Fix**: Fixed package exports to only reference CommonJS builds (removed non-existent .mjs references)
+- Updated dependencies
+  - computer-agents-core@0.4.1
+
+## 0.4.0
+
+### Minor Changes
+
+- fix versioning errors
+
+### Patch Changes
+
+- Updated dependencies
+  - computer-agents-core@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

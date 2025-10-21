@@ -9,6 +9,14 @@ For bug fixes and new features:
 ```bash
 cd /Users/jansandmann/testbase/computer-agents
 
+rm -rf packages/agents/dist
+rm -rf packages/agents-core/dist
+rm -rf packages/agents-openai/dist
+
+pnpm clean
+
+pnpm install
+
 # 1. Make your code changes
 # ... edit files ...
 

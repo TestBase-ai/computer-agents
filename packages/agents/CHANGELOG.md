@@ -1,5 +1,54 @@
 # @openai/agents
 
+## 0.4.4
+
+### Patch Changes
+
+- **Docs**: Update README badge to shields.io for faster version updates
+- Updated dependencies
+  - computer-agents-openai@0.4.4
+  - computer-agents-core@0.4.4
+
+## 0.4.3
+
+### Patch Changes
+
+- **Fix**: Default to allow execution in non-git directories for easier testing
+- Updated dependencies
+  - computer-agents-openai@0.4.3
+  - computer-agents-core@0.4.3
+
+## 0.4.2
+
+### Patch Changes
+
+- **Fix**: Replace workspace dependencies with actual version numbers for npm compatibility
+- Updated dependencies
+  - computer-agents-openai@0.4.2
+  - computer-agents-core@0.4.2
+
+## 0.4.1
+
+### Patch Changes
+
+- **Fix**: Made Agent `name` parameter optional with auto-generated defaults
+- **Fix**: Fixed package exports and ESM dependency loading
+- Updated dependencies
+  - computer-agents-openai@0.4.1
+  - computer-agents-core@0.4.1
+
+## 0.4.0
+
+### Minor Changes
+
+- fix versioning errors
+
+### Patch Changes
+
+- Updated dependencies
+  - computer-agents-openai@0.4.0
+  - computer-agents-core@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
