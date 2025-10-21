@@ -78,10 +78,10 @@ importers:
 
   packages/agents:
     dependencies:
-      '@testbase/agents-core':
+      computer-agents-core:
         specifier: workspace:*
         version: link:../agents-core
-      '@testbase/agents-openai':
+      computer-agents-openai:
         specifier: workspace:*
         version: link:../agents-openai
     devDependencies:
@@ -114,7 +114,7 @@ importers:
 
   packages/agents-openai:
     dependencies:
-      '@testbase/agents-core':
+      computer-agents-core:
         specifier: workspace:*
         version: link:../agents-core
       debug:

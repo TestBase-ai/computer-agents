@@ -20,13 +20,13 @@ import type { RunContext } from './runContext';
 import type { Agent } from './agent';
 
 export const DEFAULT_STDIO_MCP_CLIENT_LOGGER_NAME =
-  'testbase-agents:stdio-mcp-client';
+  'computer-agents:stdio-mcp-client';
 
 export const DEFAULT_STREAMABLE_HTTP_MCP_CLIENT_LOGGER_NAME =
-  'testbase-agents:streamable-http-mcp-client';
+  'computer-agents:streamable-http-mcp-client';
 
 export const DEFAULT_SSE_MCP_CLIENT_LOGGER_NAME =
-  'testbase-agents:sse-mcp-client';
+  'computer-agents:sse-mcp-client';
 
 /**
  * Interface for MCP server implementations.

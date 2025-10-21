@@ -2,7 +2,7 @@
   "name": "computer-agents-openai",
   "repository": "https://github.com/testbasehq/computer-agents",
   "homepage": "https://github.com/testbasehq/computer-agents",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "OpenAI integration for computer-agents SDK. LLM agent runtime and OpenAI API support.",
   "author": "Testbase",
   "main": "dist/index.js",

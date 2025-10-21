@@ -1,5 +1,11 @@
 # @openai/agents-core
 
+## 0.2.0
+
+### Minor Changes
+
+- Initial release as computer-agents
+
 ## 0.1.8
 
 ### Patch Changes

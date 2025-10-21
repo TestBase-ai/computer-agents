@@ -1,3 +1,6 @@
+/**
+ * Simple calculator utilities.
+ */
 function add(a, b) {
   return a + b;
 }

@@ -1,12 +1,13 @@
-# Testbase Agents SDK
+# Computer Agents SDK
 
-[![npm version](https://badge.fury.io/js/@testbase%2Fagents.svg)](https://badge.fury.io/js/@testbase%2Fagents)
+[![npm version](https://badge.fury.io/js/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A TypeScript SDK for building AI agents with **unified local and cloud execution**. Built on OpenAI Agents SDK and enhanced with Codex SDK integration for computer-use capabilities.
 
 ## Overview
 
-Testbase Agents SDK provides a **unified interface** for building multi-agent systems that combine LLM reasoning with real computer use:
+Computer Agents SDK provides a **unified interface** for building multi-agent systems that combine LLM reasoning with real computer use:
 
 - **🎯 Two Agent Types** - `'llm'` for reasoning, `'computer'` for execution
 - **🔄 Runtime Abstraction** - Seamless local ↔ cloud switching
@@ -19,13 +20,7 @@ Testbase Agents SDK provides a **unified interface** for building multi-agent sy
 ## Installation
 
 ```bash
-# From npm (when published)
-npm install @testbase/agents
-
-# From source
-cd testbase-agents
-pnpm install
-pnpm build
+npm install computer-agents
 ```
 
 ## Quick Start
@@ -33,7 +28,7 @@ pnpm build
 ### Computer Agent (Local Execution)
 
 ```typescript
-import { Agent, run, LocalRuntime } from '@testbase/agents';
+import { Agent, run, LocalRuntime } from 'computer-agents';
 
 const agent = new Agent({
   name: "Developer",
@@ -49,7 +44,7 @@ console.log(result.finalOutput);
 ### Computer Agent (Cloud Execution)
 
 ```typescript
-import { Agent, run, CloudRuntime } from '@testbase/agents';
+import { Agent, run, CloudRuntime } from 'computer-agents';
 
 const agent = new Agent({
   name: "Developer",
@@ -65,7 +60,7 @@ console.log(result.finalOutput);
 ### LLM Agent
 
 ```typescript
-import { Agent, run } from '@testbase/agents';
+import { Agent, run } from 'computer-agents';
 
 const agent = new Agent({
   name: "Planner",
@@ -147,7 +142,7 @@ await run(agent, 'Start new project');       // New session
 Both agent types support Model Context Protocol (MCP) servers with **unified configuration**:
 
 ```typescript
-import type { McpServerConfig } from '@testbase/agents';
+import type { McpServerConfig } from 'computer-agents';
 
 const mcpServers: McpServerConfig[] = [
   {
@@ -181,7 +176,7 @@ The SDK automatically converts MCP configs to the appropriate format:
 Build custom workflows by composing agents manually:
 
 ```typescript
-import { Agent, run, LocalRuntime } from '@testbase/agents';
+import { Agent, run, LocalRuntime } from 'computer-agents';
 
 // LLM creates plan
 const planner = new Agent({
@@ -366,7 +361,7 @@ Testbase provides GCE-based cloud execution for computer agents:
 ### Usage
 
 ```typescript
-import { Agent, run, CloudRuntime } from '@testbase/agents';
+import { Agent, run, CloudRuntime } from 'computer-agents';
 
 const runtime = new CloudRuntime({ debug: true });
 
@@ -391,7 +386,7 @@ import {
   LocalSessionStorage,
   GCSSessionStorage,
   WorkspaceSync
-} from '@testbase/agents';
+} from 'computer-agents';
 
 // Local filesystem storage
 const localStorage = new LocalSessionStorage({
@@ -420,7 +415,7 @@ const sync = new WorkspaceSync({
 pnpm build
 
 # Build specific package
-pnpm --filter @testbase/agents-core build
+pnpm --filter computer-agents-core build
 
 # Run tests
 pnpm test

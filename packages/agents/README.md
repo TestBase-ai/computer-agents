@@ -1,213 +1,184 @@
-# OpenAI Agents SDK (JavaScript/TypeScript)
+# computer-agents
 
-The OpenAI Agents SDK is a lightweight yet powerful framework for building multi-agent workflows in JavaScript/TypeScript. It is provider-agnostic, supporting OpenAI APIs and more.
+[![npm version](https://badge.fury.io/js/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<img src="https://cdn.openai.com/API/docs/images/orchestration.png" alt="Image of the Agents Tracing UI" style="max-height: 803px;">
+Build computer-use agents that write code, run tests, and deploy apps. Seamless local and cloud execution with automatic session continuity.
 
-## Core concepts
-
-1. **Agents**: LLMs configured with instructions, tools, guardrails, and handoffs.
-2. **Handoffs**: Specialized tool calls for transferring control between agents.
-3. **Guardrails**: Configurable safety checks for input and output validation.
-4. **Tracing**: Built-in tracking of agent runs, allowing you to view, debug, and optimize your workflows.
-
-Explore the [`examples/`](examples/) directory to see the SDK in action.
-
-## Supported Features
-
-- [x] **Multi-Agent Workflows**: Compose and orchestrate multiple agents in a single workflow.
-- [x] **Tool Integration**: Seamlessly call tools/functions from within agent responses.
-- [x] **Handoffs**: Transfer control between agents dynamically during a run.
-- [x] **Structured Outputs**: Support for both plain text and schema-validated structured outputs.
-- [x] **Streaming Responses**: Stream agent outputs and events in real time.
-- [x] **Tracing & Debugging**: Built-in tracing for visualizing and debugging agent runs.
-- [x] **Guardrails**: Input and output validation for safety and reliability.
-- [x] **Parallelization**: Run agents or tool calls in parallel and aggregate results.
-- [x] **Human-in-the-Loop**: Integrate human approval or intervention into workflows.
-- [x] **Realtime Voice Agents**: Build realtime voice agents using WebRTC or WebSockets
-- [x] **Local MCP Server Support**: Give an Agent access to a locally running MCP server to provide tools
-- [x] **Separate optimized browser package**: Dedicated package meant to run in the browser for Realtime agents.
-- [x] **Broader model support**: Use non-OpenAI models through the Vercel AI SDK adapter
-- [ ] **Long running functions**: Suspend an agent loop to execute a long-running function and revive it later <img src="https://img.shields.io/badge/Future-lightgrey" alt="Future" style="width: auto; height: 1em; vertical-align: middle;">
-- [ ] **Voice pipeline**: Chain text-based agents using speech-to-text and text-to-speech into a voice agent <img src="https://img.shields.io/badge/Future-lightgrey" alt="Future" style="width: auto; height: 1em; vertical-align: middle;">
-
-## Get started
-
-### Supported environments
-
-- Node.js 22 or later
-- Deno
-- Bun
-
-Experimental support:
-
-- Cloudflare Workers with `nodejs_compat` enabled
-
-[Check out the documentation](https://openai.github.io/openai-agents-js/guides/troubleshooting/) for more detailed information.
-
-### Installation
+## Installation
 
 ```bash
-npm install @openai/agents zod@3
+npm install computer-agents
 ```
 
-## Hello world example
+## Quick Start
 
-```js
-import { Agent, run } from '@openai/agents';
+```typescript
+import { Agent, run, LocalRuntime } from 'computer-agents';
 
 const agent = new Agent({
-  name: 'Assistant',
-  instructions: 'You are a helpful assistant',
+  agentType: 'computer',
+  runtime: new LocalRuntime(),
+  instructions: 'You are an expert developer.'
 });
 
-const result = await run(
-  agent,
-  'Write a haiku about recursion in programming.',
-);
+const result = await run(agent, "Create a Python script that prints 'Hello World'");
 console.log(result.finalOutput);
-// Code within the code,
-// Functions calling themselves,
-// Infinite loop's dance.
 ```
 
-(_If running this, ensure you set the `OPENAI_API_KEY` environment variable_)
+## Features
 
-## Functions example
+- **🎯 Two Agent Types** - `'llm'` for reasoning, `'computer'` for execution
+- **🔄 Runtime Abstraction** - Seamless local ↔ cloud switching
+- **⚡️ Automatic Session Continuity** - Multi-turn conversations work automatically
+- **🔌 Unified MCP Config** - Single configuration for all agent types
+- **📦 Manual Composition** - Build custom workflows explicitly
+- **☁️ Cloud Execution** - GCE-based with workspace sync
+- **✨ Professional** - Zero type assertions, clean abstractions
 
-```js
-import { z } from 'zod';
-import { Agent, run, tool } from '@openai/agents';
+## Agent Types
 
-const getWeatherTool = tool({
-  name: 'get_weather',
-  description: 'Get the weather for a given city',
-  parameters: z.object({ city: z.string() }),
-  execute: async (input) => {
-    return `The weather in ${input.city} is sunny`;
-  },
-});
+### Computer Agent (Local)
+
+```typescript
+import { Agent, run, LocalRuntime } from 'computer-agents';
 
 const agent = new Agent({
-  name: 'Data agent',
-  instructions: 'You are a data agent',
-  tools: [getWeatherTool],
+  agentType: 'computer',
+  runtime: new LocalRuntime(),
+  workspace: './my-project',
+  instructions: 'You are an expert developer.'
 });
 
-async function main() {
-  const result = await run(agent, 'What is the weather in Tokyo?');
-  console.log(result.finalOutput);
-}
-
-main().catch(console.error);
+const result = await run(agent, 'Add a README to the project');
 ```
 
-## Handoffs example
+### Computer Agent (Cloud)
 
-```js
-import { z } from 'zod';
-import { Agent, run, tool } from '@openai/agents';
+```typescript
+import { Agent, run, CloudRuntime } from 'computer-agents';
 
-const getWeatherTool = tool({
-  name: 'get_weather',
-  description: 'Get the weather for a given city',
-  parameters: z.object({ city: z.string() }),
-  execute: async (input) => {
-    return `The weather in ${input.city} is sunny`;
+const agent = new Agent({
+  agentType: 'computer',
+  runtime: new CloudRuntime({ debug: true }),
+  workspace: './my-project'
+});
+
+const result = await run(agent, 'Run the tests');
+```
+
+### LLM Agent
+
+```typescript
+import { Agent, run } from 'computer-agents';
+
+const agent = new Agent({
+  agentType: 'llm',
+  model: 'gpt-4o',
+  instructions: 'You create detailed implementation plans.'
+});
+
+const result = await run(agent, 'Plan how to add user authentication');
+```
+
+## Multi-Agent Workflows
+
+```typescript
+import { Agent, run, LocalRuntime } from 'computer-agents';
+
+// LLM creates plan
+const planner = new Agent({
+  agentType: 'llm',
+  model: 'gpt-4o',
+  instructions: 'Create detailed implementation plans.'
+});
+
+// Computer agent executes plan
+const executor = new Agent({
+  agentType: 'computer',
+  runtime: new LocalRuntime(),
+  instructions: 'Execute implementation plans.'
+});
+
+// LLM reviews result
+const reviewer = new Agent({
+  agentType: 'llm',
+  model: 'gpt-4o',
+  instructions: 'Review implementations for quality.'
+});
+
+// Manual workflow
+const task = "Add user authentication";
+const plan = await run(planner, `Plan: ${task}`);
+const code = await run(executor, plan.finalOutput);
+const review = await run(reviewer, `Review: ${code.finalOutput}`);
+```
+
+## Session Continuity
+
+Multiple `run()` calls automatically maintain context:
+
+```typescript
+const agent = new Agent({
+  agentType: 'computer',
+  runtime: new LocalRuntime()
+});
+
+await run(agent, 'Create app.py');           // New session
+await run(agent, 'Add error handling');      // Continues same session!
+await run(agent, 'Add tests');               // Still same session!
+
+agent.resetSession();                         // Start fresh
+await run(agent, 'Start new project');       // New session
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Required - Codex SDK and OpenAI both need this
+OPENAI_API_KEY=your-openai-key
+```
+
+### MCP Server Integration
+
+```typescript
+import type { McpServerConfig } from 'computer-agents';
+
+const mcpServers: McpServerConfig[] = [
+  {
+    type: 'stdio',
+    name: 'filesystem',
+    command: 'npx',
+    args: ['@modelcontextprotocol/server-filesystem', '/workspace']
   },
+  {
+    type: 'http',
+    name: 'notion',
+    url: 'https://notion-mcp.example.com/mcp',
+    bearerToken: process.env.NOTION_TOKEN
+  }
+];
+
+const agent = new Agent({
+  agentType: 'computer',
+  runtime: new LocalRuntime(),
+  mcpServers  // Works for both LLM and computer agents!
 });
-
-const dataAgent = new Agent({
-  name: 'Data agent',
-  instructions: 'You are a data agent',
-  handoffDescription: 'You know everything about the weather',
-  tools: [getWeatherTool],
-});
-
-// Use Agent.create method to ensure the finalOutput type considers handoffs
-const agent = Agent.create({
-  name: 'Basic test agent',
-  instructions: 'You are a basic agent',
-  handoffs: [dataAgent],
-});
-
-async function main() {
-  const result = await run(agent, 'What is the weather in San Francisco?');
-  console.log(result.finalOutput);
-}
-
-main().catch(console.error);
 ```
 
-## Voice Agent
+## Documentation
 
-```js
-import { z } from 'zod';
-import { RealtimeAgent, RealtimeSession, tool } from '@openai/agents-realtime';
+- [GitHub Repository](https://github.com/testbasehq/computer-agents)
+- [Examples](https://github.com/testbasehq/computer-agents/tree/main/examples)
+- [API Reference](https://github.com/testbasehq/computer-agents/blob/main/docs)
 
-const getWeatherTool = tool({
-  name: 'get_weather',
-  description: 'Get the weather for a given city',
-  parameters: z.object({ city: z.string() }),
-  execute: async (input) => {
-    return `The weather in ${input.city} is sunny`;
-  },
-});
+## License
 
-const agent = new RealtimeAgent({
-  name: 'Data agent',
-  instructions: 'You are a data agent',
-  tools: [getWeatherTool],
-});
+MIT
 
-// Intended to run in the browser
-const { apiKey } = await fetch('/path/to/ephemeral/key/generation').then(
-  (resp) => resp.json(),
-);
-// Automatically configures audio input/output — start talking
-const session = new RealtimeSession(agent);
-await session.connect({ apiKey });
-```
+## Credits
 
-## The agent loop
-
-When you call `Runner.run()`, the SDK executes a loop until a final output is produced.
-
-1. The agent is invoked with the given input, using the model and settings configured on the agent (or globally).
-2. The LLM returns a response, which may include tool calls or handoff requests.
-3. If the response contains a final output (see below), the loop ends and the result is returned.
-4. If the response contains a handoff, the agent is switched to the new agent and the loop continues.
-5. If there are tool calls, the tools are executed, their results are appended to the message history, and the loop continues.
-
-You can control the maximum number of iterations with the `maxTurns` parameter.
-
-### Final output
-
-The final output is the last thing the agent produces in the loop.
-
-1. If the agent has an `outputType` (structured output), the loop ends when the LLM returns a response matching that type.
-2. If there is no `outputType` (plain text), the first LLM response without tool calls or handoffs is considered the final output.
-
-**Summary of the agent loop:**
-
-- If the current agent has an `outputType`, the loop runs until structured output of that type is produced.
-- If not, the loop runs until a message is produced with no tool calls or handoffs.
-
-### Error handling
-
-- If the maximum number of turns is exceeded, a `MaxTurnsExceededError` is thrown.
-- If a guardrail is triggered, a `GuardrailTripwireTriggered` exception is raised.
-
-## Acknowledgements
-
-We'd like to acknowledge the excellent work of the open-source community, especially:
-
-- [zod](https://github.com/colinhacks/zod) (schema validation)
-- [Starlight](https://github.com/withastro/starlight)
-- [vite](https://github.com/vitejs/vite) and [vitest](https://github.com/vitest-dev/vitest)
-- [pnpm](https://pnpm.io/)
-- [Next.js](https://github.com/vercel/next.js)
-
-We're committed to building the Agents SDK as an open source framework so others in the community can expand on our approach.
-
-For more details, see the [documentation](https://openai.github.io/openai-agents-js) or explore the [`examples/`](examples/) directory.
+- Built on [OpenAI Agents SDK](https://github.com/openai/openai-agents-js)
+- Integrates with [@openai/codex-sdk](https://www.npmjs.com/package/@openai/codex-sdk)

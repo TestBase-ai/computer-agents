@@ -56,7 +56,7 @@ export type Logger = {
  * @param namespace - the namespace to use for the logger.
  * @returns A logger object with `debug` and `error` methods.
  */
-export function getLogger(namespace: string = 'testbase-agents'): Logger {
+export function getLogger(namespace: string = 'computer-agents'): Logger {
   return {
     namespace,
     debug: debug(namespace),
@@ -67,6 +67,6 @@ export function getLogger(namespace: string = 'testbase-agents'): Logger {
   };
 }
 
-export const logger = getLogger('testbase-agents:core');
+export const logger = getLogger('computer-agents:core');
 
 export default logger;

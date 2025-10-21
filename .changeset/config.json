@@ -17,6 +17,6 @@
     "onlyUpdatePeerDependentsWhenOutOfRange": true
   },
   "ignore": [
-    "computer-agents-cloud-infrastructure"
+    "@testbase/cloud-infrastructure"
   ]
 }
