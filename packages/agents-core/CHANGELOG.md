@@ -1,5 +1,20 @@
 # @openai/agents-core
 
+## 0.4.6
+
+### Patch Changes
+
+- **Feature**: Add `skipWorkspaceSync` option to CloudRuntime for cloud-only execution without local workspace sync
+  - Useful for CI/CD pipelines, isolated tasks, and faster execution
+  - When enabled, creates fresh cloud workspace and skips upload/download steps
+  - Example: `new CloudRuntime({ skipWorkspaceSync: true })`
+
+## 0.4.5
+
+### Patch Changes
+
+- **Fix**: Increase maxBuffer to 50MB for GCS workspace sync operations to prevent "maxBuffer length exceeded" errors with large workspaces
+
 ## 0.4.4
 
 ### Patch Changes

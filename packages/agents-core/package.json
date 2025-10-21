@@ -2,7 +2,7 @@
   "name": "computer-agents-core",
   "repository": "https://github.com/TestBase-ai/computer-agents",
   "homepage": "https://testbase.ai/computer-agents",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "description": "Core implementation for computer-agents SDK. Build computer-use agents with seamless local and cloud execution.",
   "author": "Testbase",
   "main": "dist/index.js",

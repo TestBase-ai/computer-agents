@@ -2,7 +2,7 @@
   "name": "computer-agents",
   "repository": "https://github.com/TestBase-ai/computer-agents",
   "homepage": "https://testbase.ai/computer-agents",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "description": "Build computer-use agents that write code, run tests, and deploy apps. Seamless local and cloud execution with automatic session continuity.",
   "author": "Testbase",
   "main": "dist/index.js",
@@ -20,8 +20,8 @@
     "build-check": "tsc --noEmit -p ./tsconfig.test.json"
   },
   "dependencies": {
-    "computer-agents-core": "0.4.4",
-    "computer-agents-openai": "0.4.4"
+    "computer-agents-core": "0.4.6",
+    "computer-agents-openai": "0.4.6"
   },
   "keywords": [
     "computer-agents",

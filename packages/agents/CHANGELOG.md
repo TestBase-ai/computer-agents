@@ -1,5 +1,26 @@
 # @openai/agents
 
+## 0.4.6
+
+### Patch Changes
+
+- **Feature**: CloudRuntime now supports cloud-only execution mode
+  - Set `skipWorkspaceSync: true` to run agents in fresh cloud workspaces without local sync
+  - Significantly faster for CI/CD and isolated cloud tasks
+  - See CloudRuntime docs for examples
+- Updated dependencies
+  - computer-agents-openai@0.4.6
+  - computer-agents-core@0.4.6
+
+## 0.4.5
+
+### Patch Changes
+
+- **Fix**: CloudRuntime workspace sync now handles large workspaces without buffer overflow
+- Updated dependencies
+  - computer-agents-openai@0.4.5
+  - computer-agents-core@0.4.5
+
 ## 0.4.4
 
 ### Patch Changes

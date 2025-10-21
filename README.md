@@ -1,21 +1,44 @@
 # Computer Agents SDK
 
-[![npm version](https://badge.fury.io/js/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
+[![npm version](https://img.shields.io/npm/v/computer-agents.svg)](https://www.npmjs.com/package/computer-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A TypeScript SDK for building AI agents with **unified local and cloud execution**. Built on OpenAI Agents SDK and enhanced with Codex SDK integration for computer-use capabilities.
+**The first orchestration framework for parallel computer-use agents.**
 
-## Overview
+Scale from 1 to 100+ agents. Run experiments in parallel. Test multiple approaches simultaneously. computer-agents enables agent workflows that were previously impossible.
 
-Computer Agents SDK provides a **unified interface** for building multi-agent systems that combine LLM reasoning with real computer use:
+## What Makes This Different
 
-- **🎯 Two Agent Types** - `'llm'` for reasoning, `'computer'` for execution
-- **🔄 Runtime Abstraction** - Seamless local ↔ cloud switching
-- **⚡️ Automatic Session Continuity** - Multi-turn conversations work automatically
-- **🔌 Unified MCP Config** - Single configuration for all agent types
-- **📦 Manual Composition** - Build custom workflows explicitly
-- **☁️ Cloud Execution** - GCE-based with GCS workspace sync and pay-per-token billing
-- **✨ Professional** - Zero type assertions, clean abstractions, comprehensive tests
+Traditional agent frameworks focus on chat-based LLM agents. computer-agents is built for **computer-use agents** that write code, run tests, and modify files—with native support for **parallel execution at scale**.
+
+### Before computer-agents
+
+- ❌ No parallel orchestration for computer-use agents
+- ❌ Single agent, single workspace, sequential execution
+- ❌ Hours to run experiments sequentially
+- ❌ Limited to local machine resources
+
+### With computer-agents
+
+- ✅ **Parallel Orchestration** - Run 10, 50, 100+ agents simultaneously
+- ✅ **Unified Interface** - Seamless local ↔ cloud execution with one config change
+- ✅ **Workspace Collaboration** - Multiple agents working on the same codebase
+- ✅ **Cloud Scalability** - Effortless scaling beyond local machine limits
+- ✅ **Session Continuity** - Automatic multi-turn conversations
+
+## Revolutionary Use Cases
+
+**🔬 Scientific Experiments**
+Run 20 experimental variations in parallel instead of sequentially. What took hours now takes minutes.
+
+**🧪 ML/AI Development**
+Test dozens of hyperparameter configurations simultaneously. Systematic exploration of model architectures at scale.
+
+**⚡️ Multi-Approach Problem Solving**
+Try 5 different implementation approaches in parallel. Let the agents find the best solution.
+
+**🚀 A/B Testing at Scale**
+Test multiple implementations, frameworks, or approaches concurrently. Data-driven decision making.
 
 ## Installation
 
@@ -25,59 +48,111 @@ npm install computer-agents
 
 ## Quick Start
 
-### Computer Agent (Local Execution)
+### Local Computer Agent
 
 ```typescript
 import { Agent, run, LocalRuntime } from 'computer-agents';
 
 const agent = new Agent({
-  name: "Developer",
   agentType: "computer",
   runtime: new LocalRuntime(),
+  workspace: "./my-project",
   instructions: "You are an expert developer."
 });
 
-const result = await run(agent, "Create hello.py that prints 'Hello World'");
+const result = await run(agent, "Create a Python script that calculates fibonacci numbers");
 console.log(result.finalOutput);
 ```
 
-### Computer Agent (Cloud Execution)
+### Cloud Computer Agent (with workspace sync)
 
 ```typescript
 import { Agent, run, CloudRuntime } from 'computer-agents';
 
 const agent = new Agent({
-  name: "Developer",
   agentType: "computer",
-  runtime: new CloudRuntime({ debug: true }),
+  runtime: new CloudRuntime({ apiKey: process.env.TESTBASE_API_KEY }),
+  workspace: "./my-project",
   instructions: "You are an expert developer."
 });
 
-const result = await run(agent, "Create hello.py that prints 'Hello World'");
+const result = await run(agent, "Add unit tests to the fibonacci module");
 console.log(result.finalOutput);
+// Files automatically synced from cloud to local workspace
 ```
 
-### LLM Agent
+### Cloud-Only Mode (no local sync)
+
+Perfect for CI/CD, experiments, and parallel tasks:
 
 ```typescript
-import { Agent, run } from 'computer-agents';
+const runtime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY,
+  skipWorkspaceSync: true,  // No upload/download, faster execution
+});
 
 const agent = new Agent({
-  name: "Planner",
+  agentType: "computer",
+  runtime,
+  workspace: "./cloud-workspace",  // Placeholder, not synced
+});
+
+const result = await run(agent, "Build a REST API with Express");
+// Executes in fresh cloud workspace, results stay in cloud
+```
+
+### Parallel Execution (The Game Changer)
+
+Run multiple agents simultaneously:
+
+```typescript
+import { Agent, run, CloudRuntime } from 'computer-agents';
+
+const runtime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY,
+  skipWorkspaceSync: true,
+});
+
+// Create 5 agents to test different approaches
+const agents = [
+  'Express',
+  'Fastify',
+  'Koa',
+  'Hapi',
+  'Restify'
+].map(framework => new Agent({
+  name: `${framework} Agent`,
+  agentType: 'computer',
+  runtime,
+  workspace: `./test-${framework.toLowerCase()}`,
+  instructions: `You are an expert in ${framework}.`
+}));
+
+// Run all 5 in parallel!
+const results = await Promise.all(
+  agents.map((agent, i) => run(agent, `Create a REST API with ${frameworks[i]}`))
+);
+
+// All 5 implementations complete in the time it takes to run 1
+console.log('All 5 frameworks tested in parallel!');
+```
+
+### LLM Agent (for planning and reasoning)
+
+```typescript
+const planner = new Agent({
   agentType: "llm",
   model: "gpt-4o",
   instructions: "You create detailed implementation plans."
 });
 
-const result = await run(agent, "Plan how to add user authentication");
-console.log(result.finalOutput);
+const plan = await run(planner, "Plan how to add user authentication");
+console.log(plan.finalOutput);
 ```
 
 ## Core Concepts
 
 ### Agent Types
-
-Testbase uses **only two agent types** for maximum simplicity:
 
 ```typescript
 type AgentType = 'llm' | 'computer';
@@ -85,41 +160,54 @@ type AgentType = 'llm' | 'computer';
 
 | Type | Execution | Use Cases |
 |------|-----------|-----------|
-| `'llm'` | OpenAI API | Chat, reasoning, planning, reviewing |
-| `'computer'` | Codex SDK | Code changes, file operations, terminal commands |
-
-**Key principle:** Orchestration roles (planner, worker, reviewer) are **workflow patterns**, not agent types.
+| `'llm'` | OpenAI API | Planning, reasoning, reviewing |
+| `'computer'` | Codex SDK | Code, tests, file operations, terminal commands |
 
 ### Runtime Abstraction
 
-Runtimes determine **where** and **how** computer agents execute:
+Switch between local and cloud execution with one config change:
 
 ```typescript
-interface Runtime {
-  readonly type: 'local' | 'cloud';
-  execute(config: RuntimeExecutionConfig): Promise<RuntimeExecutionResult>;
-  cleanup?(): Promise<void>;
-}
-```
+// Local execution
+const localRuntime = new LocalRuntime();
 
-**LocalRuntime** - Execute on your local machine:
-```typescript
-const runtime = new LocalRuntime();
-```
+// Cloud execution
+const cloudRuntime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY
+});
 
-**CloudRuntime** - Execute in cloud containers (GCE):
-```typescript
-const runtime = new CloudRuntime({
-  debug: true,      // Optional: show detailed logs
-  timeout: 600000,  // Optional: 10 minutes default
+// Use either runtime with any agent
+const agent = new Agent({
+  agentType: 'computer',
+  runtime: localRuntime,  // or cloudRuntime
+  workspace: './project'
 });
 ```
 
-**Key benefit:** Switch between local and cloud by changing one line of code.
+### Workspace Modes
+
+**Default Mode** - Sync local ↔ cloud:
+```typescript
+const runtime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY,
+  // skipWorkspaceSync: false (default)
+});
+// Uploads local files, downloads results
+```
+
+**Cloud-Only Mode** - No local sync:
+```typescript
+const runtime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY,
+  skipWorkspaceSync: true,  // NEW in v0.4.6
+});
+// Fresh cloud workspace, no upload/download
+// Perfect for CI/CD, experiments, parallel tasks
+```
 
 ### Session Continuity
 
-Multiple `run()` calls automatically maintain context:
+Agents automatically maintain context across multiple runs:
 
 ```typescript
 const agent = new Agent({
@@ -133,47 +221,42 @@ await run(agent, 'Add tests');               // Still same session!
 
 console.log(agent.currentThreadId);          // Thread ID maintained
 
-agent.resetSession();                         // Start fresh
-await run(agent, 'Start new project');       // New session
+agent.resetSession();                         // Start fresh when needed
+await run(agent, 'New project');             // New session
 ```
 
-### MCP Server Integration
+## Examples
 
-Both agent types support Model Context Protocol (MCP) servers with **unified configuration**:
+Comprehensive examples demonstrating the power of computer-agents:
 
-```typescript
-import type { McpServerConfig } from 'computer-agents';
+```bash
+# Clone the repository
+git clone https://github.com/TestBase-ai/computer-agents.git
+cd computer-agents
+npm install
+npm run build
 
-const mcpServers: McpServerConfig[] = [
-  {
-    type: 'stdio',
-    name: 'filesystem',
-    command: 'npx',
-    args: ['@modelcontextprotocol/server-filesystem', '/workspace']
-  },
-  {
-    type: 'http',
-    name: 'notion',
-    url: 'https://notion-mcp.example.com/mcp',
-    bearerToken: process.env.NOTION_TOKEN
-  }
-];
+# Workspace sync modes (default vs cloud-only)
+node examples/testbase/workspace-sync-modes.mjs
 
-// Works for both LLM and computer agents!
-const agent = new Agent({
-  agentType: 'computer',
-  runtime: new LocalRuntime(),
-  mcpServers  // ← Automatic conversion
-});
+# Parallel execution (the game changer!)
+node examples/testbase/parallel-execution.mjs
+
+# Scale experiments (ML hyperparameter tuning, algorithm comparison)
+node examples/testbase/scale-experiments.mjs
+
+# Multi-agent workflows (planner → executor → reviewer)
+node examples/testbase/multi-agent-workflow.mjs
+
+# Session continuity demonstration
+node examples/testbase/hello-world.mjs
 ```
 
-The SDK automatically converts MCP configs to the appropriate format:
-- **LLM agents**: MCP servers → function tools
-- **Computer agents**: MCP servers → Codex SDK config
+**[📂 View all examples →](https://github.com/TestBase-ai/computer-agents/tree/main/examples/testbase)**
 
 ## Multi-Agent Workflows
 
-Build custom workflows by composing agents manually:
+Build custom workflows by composing agents:
 
 ```typescript
 import { Agent, run, LocalRuntime } from 'computer-agents';
@@ -199,230 +282,113 @@ const reviewer = new Agent({
   instructions: 'Review implementations for quality.'
 });
 
-// Manual workflow composition
+// Manual workflow composition - you control the flow
 const task = "Add user authentication";
 const plan = await run(planner, `Plan: ${task}`);
 const code = await run(executor, plan.finalOutput);
 const review = await run(reviewer, `Review: ${code.finalOutput}`);
-
-console.log('Review:', review.finalOutput);
 ```
-
-**You control the workflow** - No magic orchestration layer, just explicit composition.
-
-## Examples
-
-Comprehensive examples in `examples/testbase/`:
-
-```bash
-cd testbase-agents
-pnpm install
-pnpm build
-
-# Hello World - Session Continuity
-node ./examples/testbase/hello-world.mjs
-
-# Multi-Agent Workflow - Planner → Executor → Reviewer
-node ./examples/testbase/multi-agent-workflow.mjs
-
-# Runtime Comparison - Local vs Cloud
-node ./examples/testbase/runtime-comparison.mjs local
-node ./examples/testbase/runtime-comparison.mjs cloud  # Requires API key
-
-# Cloud Execution - Full cloud workflow
-export TESTBASE_API_URL=http://34.170.205.13:8080  # Optional, has default
-node ./examples/testbase/cloud-execution.mjs
-
-# MCP Integration - Unified MCP configuration
-node ./examples/testbase/mcp-integration.mjs
-```
-
-See [examples/testbase/README.md](./examples/testbase/README.md) for detailed guide.
 
 ## Configuration
 
 ### Environment Variables
 
 ```bash
-# Required for all LLM agents and computer agents (Codex SDK uses OpenAI)
+# Required for LLM agents and computer agents (Codex SDK uses OpenAI)
 OPENAI_API_KEY=your-openai-key
 
-# Optional - for cloud runtime (has default)
-TESTBASE_API_URL=http://34.170.205.13:8080  # Default GCE VM
+# Optional for CloudRuntime (has default)
+TESTBASE_API_KEY=your-testbase-key  # Get from testbase.ai
+```
+
+### Runtime Configuration
+
+```typescript
+// LocalRuntime
+const localRuntime = new LocalRuntime({
+  debug: true,              // Show detailed logs
+  skipGitRepoCheck: true,   // Allow execution outside git repos (default: true)
+});
+
+// CloudRuntime
+const cloudRuntime = new CloudRuntime({
+  apiKey: process.env.TESTBASE_API_KEY,  // Required (or use env var)
+  debug: true,                            // Show detailed logs
+  skipWorkspaceSync: false,               // Sync local ↔ cloud (default: false)
+  timeout: 600000,                        // 10 minutes (default)
+});
 ```
 
 ### Agent Configuration
 
 ```typescript
-interface AgentConfiguration {
-  // Required
-  name?: string;
-  agentType?: 'llm' | 'computer';
+const agent = new Agent({
+  name: "My Agent",                    // Optional, auto-generated if omitted
+  agentType: 'computer',               // 'llm' | 'computer'
 
-  // LLM-specific (agentType: 'llm')
-  model?: string;              // Required for LLM agents
-  instructions?: string;
-  tools?: Tool[];
+  // Computer agent specific
+  runtime: new LocalRuntime(),         // Required for computer agents
+  workspace: './my-project',           // Required for computer agents
 
-  // Computer-specific (agentType: 'computer')
-  runtime?: Runtime;           // Required for computer agents
-  workspace?: string;
+  // LLM agent specific
+  model: 'gpt-4o',                     // Required for LLM agents
 
   // Shared
-  mcpServers?: McpServerConfig[];
-}
+  instructions: "You are helpful.",    // System prompt
+  mcpServers: [...],                   // MCP server configurations (optional)
+});
 ```
 
-## Architecture
+## MCP Server Integration
 
-### Project Structure
-
-```
-testbase-agents/
-├── packages/
-│   ├── agents-core/              # Core SDK
-│   │   ├── src/
-│   │   │   ├── agent.ts          # Agent class
-│   │   │   ├── run.ts            # Run loop
-│   │   │   ├── runtime/          # Runtime abstraction
-│   │   │   │   ├── LocalRuntime.ts
-│   │   │   │   └── CloudRuntime.ts
-│   │   │   ├── codex/            # Codex SDK integration
-│   │   │   ├── cloud/            # Cloud API client
-│   │   │   ├── storage/          # Session storage
-│   │   │   ├── mcpConfig.ts      # Unified MCP types
-│   │   │   └── mcpConverters.ts  # MCP converters
-│   │   └── package.json
-│   │
-│   ├── agents/                   # Main package export
-│   ├── agents-openai/            # OpenAI provider
-│   ├── agents-realtime/          # Realtime voice agents
-│   └── cloud-infrastructure/     # GCE cloud execution server
-│
-├── examples/testbase/            # Working examples
-└── docs/                         # Documentation
-```
-
-### Runtime Flow
-
-**LocalRuntime:**
-```
-run() → runtime.execute() → Codex SDK (local) → result
-```
-
-**CloudRuntime:**
-```
-run() → runtime.execute() →
-  1. Upload workspace to GCS
-  2. POST to GCE VM
-  3. VM downloads from GCS
-  4. VM executes via Codex SDK
-  5. VM uploads changes to GCS
-  6. Download workspace from GCS
-→ result
-```
-
-### Execution Optimization
-
-Computer agents **bypass the model provider** entirely for maximum performance:
+Unified MCP configuration works for both agent types:
 
 ```typescript
-// Computer agents execute directly via runtime
-if (agent.agentType === 'computer') {
-  return runtime.execute(config);  // No LLM intermediary
-}
+import type { McpServerConfig } from 'computer-agents';
 
-// LLM agents use standard OpenAI flow
-return modelProvider.getResponse(config);
-```
+const mcpServers: McpServerConfig[] = [
+  {
+    type: 'stdio',
+    name: 'filesystem',
+    command: 'npx',
+    args: ['@modelcontextprotocol/server-filesystem', '/workspace']
+  },
+  {
+    type: 'http',
+    name: 'notion',
+    url: 'https://notion-mcp.example.com/mcp',
+    bearerToken: process.env.NOTION_TOKEN
+  }
+];
 
-**Benefits:**
-- Faster execution (no extra LLM hop)
-- Lower cost (no additional API calls)
-- Deterministic (no LLM variability)
-
-## Cloud Infrastructure
-
-Testbase provides GCE-based cloud execution for computer agents:
-
-### Architecture
-
-- **GCS Bucket** - Source of truth for workspaces (`gs://testbase-workspaces`)
-- **GCE VM** - Runs Express server with Codex SDK execution (IP: 34.170.205.13)
-- **CloudRuntime** - Handles upload → execute → download flow
-
-### Features
-
-- **Billing System** - Pay-per-token with credit management
-- **API Keys** - Database-backed authentication (standard + internal keys)
-- **Budget Protection** - Daily/monthly spending limits
-- **Session Storage** - Optional GCS persistence
-
-### Usage
-
-```typescript
-import { Agent, run, CloudRuntime } from 'computer-agents';
-
-const runtime = new CloudRuntime({ debug: true });
-
+// Works for both LLM and computer agents!
 const agent = new Agent({
   agentType: 'computer',
-  runtime,
-  workspace: './my-project'
-});
-
-const result = await run(agent, 'Create REST API with Express');
-console.log(result.finalOutput);
-```
-
-See [packages/cloud-infrastructure/README.md](./packages/cloud-infrastructure/README.md) for deployment details.
-
-## Storage Abstractions
-
-Optional session and workspace storage backends:
-
-```typescript
-import {
-  LocalSessionStorage,
-  GCSSessionStorage,
-  WorkspaceSync
-} from 'computer-agents';
-
-// Local filesystem storage
-const localStorage = new LocalSessionStorage({
-  basePath: '/path/to/sessions'
-});
-
-// Google Cloud Storage
-const gcsStorage = new GCSSessionStorage({
-  bucket: 'testbase-sessions',
-  prefix: 'sessions'
-});
-
-// Workspace synchronization
-const sync = new WorkspaceSync({
-  conflictResolution: 'newest',
-  excludePatterns: ['node_modules/**', '.git/**']
+  runtime: new LocalRuntime(),
+  mcpServers  // Automatically converted to appropriate format
 });
 ```
 
-**Note:** These are optional - most users won't need custom storage configuration.
+The SDK handles conversion automatically:
+- **LLM agents**: MCP servers → function tools
+- **Computer agents**: MCP servers → Codex SDK config
 
-## Development
+## Performance
 
-```bash
-# Build all packages
-pnpm build
+### LocalRuntime
+- **Cold start**: <1 second
+- **Warm execution**: <100ms overhead
+- **Parallelization**: Limited by local CPU/memory
 
-# Build specific package
-pnpm --filter computer-agents-core build
+### CloudRuntime (Default Mode)
+- **First execution**: 30-45 seconds (includes workspace sync)
+- **Subsequent runs**: ~5-10 seconds
+- **Parallelization**: Scale to 100+ agents
 
-# Run tests
-pnpm test
-
-# Clean build artifacts
-pnpm clean
-```
+### CloudRuntime (Cloud-Only Mode)
+- **Execution**: Faster (no sync overhead)
+- **Parallelization**: Scale to 100+ agents
+- **Perfect for**: CI/CD, experiments, parallel tasks
 
 ## API Reference
 
@@ -431,8 +397,11 @@ pnpm clean
 ```typescript
 class Agent {
   constructor(config: AgentConfiguration);
-  currentThreadId: string | undefined;
-  resetSession(): void;
+
+  currentThreadId: string | undefined;  // Current session thread ID
+  resetSession(): void;                 // Start new session
+  workspace: string;                    // Workspace path
+  agentType: 'llm' | 'computer';       // Agent type
 }
 ```
 
@@ -450,7 +419,11 @@ function run(
 
 ```typescript
 class LocalRuntime implements Runtime {
-  constructor(config?: LocalRuntimeConfig);
+  constructor(config?: {
+    debug?: boolean;
+    skipGitRepoCheck?: boolean;  // default: true
+  });
+
   readonly type: 'local';
   execute(config: RuntimeExecutionConfig): Promise<RuntimeExecutionResult>;
 }
@@ -460,88 +433,125 @@ class LocalRuntime implements Runtime {
 
 ```typescript
 class CloudRuntime implements Runtime {
-  constructor(config?: CloudRuntimeConfig);
+  constructor(config?: {
+    apiKey?: string;              // Required (or env var TESTBASE_API_KEY)
+    debug?: boolean;
+    skipWorkspaceSync?: boolean;  // default: false
+    timeout?: number;             // default: 600000ms (10 min)
+  });
+
   readonly type: 'cloud';
   execute(config: RuntimeExecutionConfig): Promise<RuntimeExecutionResult>;
   cleanup(): Promise<void>;
 }
 ```
 
+## Architecture
+
+```
+computer-agents/
+├── packages/
+│   ├── agents-core/              # Core SDK
+│   │   ├── src/
+│   │   │   ├── agent.ts          # Agent class
+│   │   │   ├── run.ts            # Run loop
+│   │   │   ├── runtime/          # Runtime abstraction
+│   │   │   │   ├── LocalRuntime.ts
+│   │   │   │   ├── CloudRuntime.ts
+│   │   │   │   └── gcsWorkspace.ts
+│   │   │   ├── codex/            # Codex SDK integration
+│   │   │   ├── cloud/            # Cloud API client
+│   │   │   └── mcpConfig.ts      # Unified MCP types
+│   │   └── package.json
+│   │
+│   ├── agents/                   # Main package export
+│   ├── agents-openai/            # OpenAI provider
+│   └── cloud-infrastructure/     # GCE cloud execution server
+│
+└── examples/testbase/            # Working examples
+```
+
 ## Best Practices
 
-### When to Use LocalRuntime vs CloudRuntime
+### Choosing Local vs Cloud
 
 **Use LocalRuntime when:**
-- Development and testing
-- Fast iteration cycles needed
+- Development and rapid iteration
 - Working with local files/tools
-- No cloud infrastructure required
+- No cloud infrastructure needed
+- Testing and debugging
 
 **Use CloudRuntime when:**
+- Parallel execution at scale
 - Production deployments
-- Need isolated execution environment
-- Team collaboration on shared workspaces
-- Budget tracking and billing required
+- CI/CD pipelines
+- Need isolated execution environments
+- Experiments requiring multiple concurrent agents
+
+### Choosing Workspace Sync Mode
+
+**Use Default Mode (skipWorkspaceSync: false) when:**
+- You need results in your local filesystem
+- Continuing work locally after cloud execution
+- Interactive development workflows
+
+**Use Cloud-Only Mode (skipWorkspaceSync: true) when:**
+- CI/CD pipelines (no local filesystem)
+- Running experiments at scale
+- Parallel task execution
+- Faster execution (skip sync overhead)
 
 ### Session Management
 
 Always use the **same agent instance** for session continuity:
 
 ```typescript
-// ✅ Correct - same agent
-const agent = new Agent({ agentType: 'computer', runtime: new LocalRuntime() });
+// ✅ Correct - same agent, continuous session
+const agent = new Agent({...});
 await run(agent, 'Task 1');
 await run(agent, 'Task 2');  // Continues session
 
-// ❌ Wrong - different agents
+// ❌ Wrong - different agents, new sessions
 await run(new Agent({...}), 'Task 1');
-await run(new Agent({...}), 'Task 2');  // New session!
+await run(new Agent({...}), 'Task 2');  // Different session!
 ```
 
-### Error Handling
+### Parallel Execution
 
-Always cleanup cloud resources:
+Use `Promise.all()` for parallel execution:
 
 ```typescript
-const runtime = new CloudRuntime();
-const agent = new Agent({ agentType: 'computer', runtime });
+const agents = [agent1, agent2, agent3];
+const tasks = ['Task 1', 'Task 2', 'Task 3'];
 
-try {
-  await run(agent, task);
-} finally {
-  await runtime.cleanup();  // Important for cloud resources
+// ✅ Parallel - all execute simultaneously
+const results = await Promise.all(
+  agents.map((agent, i) => run(agent, tasks[i]))
+);
+
+// ❌ Sequential - one at a time
+for (let i = 0; i < agents.length; i++) {
+  await run(agents[i], tasks[i]);  // Slower!
 }
 ```
 
-## Differences from OpenAI Agents SDK
+## Cloud Infrastructure
 
-This SDK extends OpenAI's Agents SDK with:
+computer-agents includes production-ready cloud infrastructure:
 
-1. **Computer-use agent type** - Direct Codex SDK integration
-2. **Runtime abstraction** - Local and cloud execution modes
-3. **Session continuity** - Automatic thread management
-4. **Unified MCP config** - Single configuration for all agent types
-5. **Cloud infrastructure** - GCE-based execution with billing
-6. **Optimized execution** - Computer agents bypass model provider
+- **GCS Bucket** - Workspace storage (`gs://testbase-workspaces`)
+- **GCE VM** - Codex SDK execution server
+- **Pay-per-token** - Credit-based billing system
+- **API Keys** - Database-backed authentication
+- **Budget Protection** - Daily/monthly spending limits
 
-## Performance
-
-### LocalRuntime
-- **Cold start**: <1 second
-- **Warm execution**: <100ms overhead
-- **Memory**: Depends on Codex SDK and model
-
-### CloudRuntime
-- **Cold start**: 30-45 seconds (includes workspace sync)
-- **Warm execution**: ~5 seconds
-- **Storage**: Persistent workspace in GCS
+See [Cloud Infrastructure docs](./packages/cloud-infrastructure/README.md) for deployment details.
 
 ## Documentation
 
-- [Architecture Guide](../docs/ARCHITECTURE.md)
-- [Cloud Infrastructure](./packages/cloud-infrastructure/README.md)
-- [Examples Guide](./examples/testbase/README.md)
-- [CLAUDE.md](../CLAUDE.md) - Development guide
+- **[Examples](https://github.com/TestBase-ai/computer-agents/tree/main/examples/testbase)** - Comprehensive working examples
+- **[Cloud Infrastructure](./packages/cloud-infrastructure/README.md)** - Deployment and configuration
+- **[Architecture](../docs/ARCHITECTURE.md)** - System design and internals
 
 ## Troubleshooting
 
@@ -550,34 +560,68 @@ This SDK extends OpenAI's Agents SDK with:
 export OPENAI_API_KEY=sk-...
 ```
 
-### "Workspace path must be absolute"
-Use `resolve()` to create absolute paths:
-```typescript
-import { resolve } from 'path';
-const workspace = resolve('./my-repo');
-```
-
-### Cloud execution fails with 401
-Check your API key (or use default which doesn't require authentication):
+### "TESTBASE_API_KEY required"
 ```bash
-export TESTBASE_API_URL=http://34.170.205.13:8080  # Default
+export TESTBASE_API_KEY=your-key
+# Or provide in constructor:
+new CloudRuntime({ apiKey: 'your-key' })
 ```
 
 ### Session continuity not working
 Ensure you're using the **same agent instance** across runs.
 
+### Cloud execution slow
+Use `skipWorkspaceSync: true` to skip upload/download overhead:
+```typescript
+new CloudRuntime({ skipWorkspaceSync: true })
+```
+
+## What's New
+
+### v0.4.6
+- **Cloud-Only Mode**: `skipWorkspaceSync` option for CloudRuntime
+- Perfect for CI/CD and parallel experiments
+- Faster cloud execution (no sync overhead)
+
+### v0.4.5
+- Fixed maxBuffer overflow for large workspace syncs
+- Improved GCS operation stability
+
+### v0.4.0
+- Initial public release
+- Parallel computer-use agent orchestration
+- Unified local/cloud runtime abstraction
+- Session continuity
+
+## Differences from OpenAI Agents SDK
+
+computer-agents extends OpenAI's Agents SDK with:
+
+1. **Computer-use agent type** - Direct Codex SDK integration
+2. **Runtime abstraction** - Local and cloud execution modes
+3. **Parallel orchestration** - Native support for concurrent agents
+4. **Session continuity** - Automatic thread management
+5. **Cloud infrastructure** - Production-ready execution platform
+6. **Unified MCP config** - Single configuration for all agent types
+
 ## License
 
 MIT
 
-## Credits
+## Links
 
-- Built on [OpenAI Agents SDK](https://github.com/openai/openai-agents-sdk)
-- Integrates with [Codex SDK](https://github.com/anthropics/claude-code)
-- Cloud infrastructure powered by Google Cloud Platform
+- **GitHub**: [https://github.com/TestBase-ai/computer-agents](https://github.com/TestBase-ai/computer-agents)
+- **Examples**: [https://github.com/TestBase-ai/computer-agents/tree/main/examples/testbase](https://github.com/TestBase-ai/computer-agents/tree/main/examples/testbase)
+- **npm**: [https://www.npmjs.com/package/computer-agents](https://www.npmjs.com/package/computer-agents)
+- **Website**: [https://testbase.ai/computer-agents](https://testbase.ai/computer-agents)
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/testbase/testbase-agents/issues)
-- **Documentation**: See docs/ directory
-- **Examples**: See examples/testbase/ directory
+- **Issues**: [GitHub Issues](https://github.com/TestBase-ai/computer-agents/issues)
+- **Website**: [testbase.ai](https://testbase.ai)
+
+---
+
+**Built with ❤️ by [TestBase](https://testbase.ai)**
+
+*Based on [OpenAI Agents SDK](https://github.com/openai/openai-agents-sdk) • Powered by [Codex SDK](https://github.com/anthropics/claude-code) • Cloud infrastructure on GCP*

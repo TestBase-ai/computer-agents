@@ -103,7 +103,10 @@ export async function uploadWorkspaceToGCS(
     // This is important when syncing with gcsfuse-mounted workspaces
     await execWithRetry(
       `gsutil -m rsync -r -d -c "${localPath}/" "${gcsPath}"`,
-      { timeout: 300000 } // 5 min timeout
+      {
+        timeout: 300000, // 5 min timeout
+        maxBuffer: 50 * 1024 * 1024 // 50MB buffer for stderr
+      }
     );
   } catch (error) {
     throw new Error(
@@ -129,7 +132,10 @@ export async function downloadWorkspaceFromGCS(
     // This is important when syncing with gcsfuse-mounted workspaces
     await execWithRetry(
       `gsutil -m rsync -r -d -c "${gcsPath}" "${localPath}/"`,
-      { timeout: 300000 } // 5 min timeout
+      {
+        timeout: 300000, // 5 min timeout
+        maxBuffer: 50 * 1024 * 1024 // 50MB buffer for stderr
+      }
     );
   } catch (error: any) {
     // Ignore error if workspace doesn't exist yet (first upload)

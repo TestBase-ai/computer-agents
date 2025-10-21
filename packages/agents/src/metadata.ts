@@ -3,9 +3,9 @@
 
 export const METADATA = {
   "name": "computer-agents",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "versions": {
-    "computer-agents": "0.4.4"
+    "computer-agents": "0.4.6"
   }
 };
 

@@ -1,10 +1,15 @@
 /**
  * CloudRuntime - Simplified GCE-based execution
  *
- * Architecture:
+ * Architecture (default mode with workspace sync):
  * 1. Upload workspace to GCS
  * 2. POST to GCE VM (executes via Codex SDK)
  * 3. Download workspace from GCS (get updates)
+ *
+ * Cloud-only mode (skipWorkspaceSync: true):
+ * 1. Skip upload (fresh cloud workspace)
+ * 2. POST to GCE VM (executes via Codex SDK)
+ * 3. Skip download (results stay in cloud)
  *
  * No container management, no complex lifecycle - just simple HTTP calls.
  */
@@ -34,12 +39,21 @@ export interface CloudRuntimeConfig {
    * @default 600000 (10 minutes)
    */
   timeout?: number;
+
+  /**
+   * Skip local workspace sync (upload/download)
+   * When true, agent runs in a fresh cloud workspace without syncing local files
+   * Useful for CI/CD, isolated tasks, or faster execution
+   * @default false
+   */
+  skipWorkspaceSync?: boolean;
 }
 
 /**
  * Simplified CloudRuntime for GCE-based execution.
  *
  * @example
+ * With workspace sync (default):
  * ```typescript
  * const runtime = new CloudRuntime({
  *   apiKey: process.env.TESTBASE_API_KEY,
@@ -49,10 +63,29 @@ export interface CloudRuntimeConfig {
  * const agent = new Agent({
  *   agentType: 'computer',
  *   runtime,
- *   workspace: './my-project'
+ *   workspace: './my-project'  // Syncs to/from cloud
  * });
  *
  * const result = await run(agent, 'Create app.py');
+ * ```
+ *
+ * @example
+ * Cloud-only mode (no local sync):
+ * ```typescript
+ * const runtime = new CloudRuntime({
+ *   apiKey: process.env.TESTBASE_API_KEY,
+ *   skipWorkspaceSync: true,  // No upload/download
+ *   debug: true
+ * });
+ *
+ * const agent = new Agent({
+ *   agentType: 'computer',
+ *   runtime,
+ *   workspace: './cloud-workspace'  // Not synced, just a placeholder
+ * });
+ *
+ * const result = await run(agent, 'Create app.py');
+ * // Files created in fresh cloud workspace, not downloaded locally
  * ```
  */
 export class CloudRuntime implements Runtime {
@@ -75,6 +108,7 @@ export class CloudRuntime implements Runtime {
       apiKey,
       debug: config.debug ?? false,
       timeout: config.timeout ?? 600000, // 10 min default
+      skipWorkspaceSync: config.skipWorkspaceSync ?? false,
     };
   }
 
@@ -87,25 +121,33 @@ export class CloudRuntime implements Runtime {
       );
     }
 
-    // Generate stable workspace ID from path
-    const workspaceId = generateWorkspaceId(workspace);
+    // Generate workspace ID
+    // - If skipWorkspaceSync: random ID for fresh cloud workspace
+    // - Otherwise: stable ID from local path
+    const workspaceId = this.config.skipWorkspaceSync
+      ? `cloud-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+      : generateWorkspaceId(workspace);
 
     if (this.config.debug) {
       logger.debug('[CloudRuntime] Starting execution', {
         workspaceId,
         sessionId,
         workspace,
+        skipWorkspaceSync: this.config.skipWorkspaceSync,
         apiUrl: API_URL,
       });
     }
 
     try {
-      // Step 1: Upload workspace to GCS
-      if (this.config.debug) {
-        logger.debug('[CloudRuntime] Uploading workspace to GCS', { workspaceId });
+      // Step 1: Upload workspace to GCS (skip if cloud-only mode)
+      if (!this.config.skipWorkspaceSync) {
+        if (this.config.debug) {
+          logger.debug('[CloudRuntime] Uploading workspace to GCS', { workspaceId });
+        }
+        await uploadWorkspaceToGCS(workspace, workspaceId);
+      } else if (this.config.debug) {
+        logger.debug('[CloudRuntime] Skipping workspace upload (cloud-only mode)');
       }
-
-      await uploadWorkspaceToGCS(workspace, workspaceId);
 
       // Step 2: Execute on GCE VM
       if (this.config.debug) {
@@ -153,17 +195,21 @@ export class CloudRuntime implements Runtime {
 
       const result = await response.json();
 
-      // Step 3: Download workspace from GCS (get updates)
-      if (this.config.debug) {
-        logger.debug('[CloudRuntime] Downloading workspace from GCS', { workspaceId });
+      // Step 3: Download workspace from GCS (skip if cloud-only mode)
+      if (!this.config.skipWorkspaceSync) {
+        if (this.config.debug) {
+          logger.debug('[CloudRuntime] Downloading workspace from GCS', { workspaceId });
+        }
+        await downloadWorkspaceFromGCS(workspaceId, workspace);
+      } else if (this.config.debug) {
+        logger.debug('[CloudRuntime] Skipping workspace download (cloud-only mode)');
       }
-
-      await downloadWorkspaceFromGCS(workspaceId, workspace);
 
       if (this.config.debug) {
         logger.debug('[CloudRuntime] Execution completed', {
           sessionId: result.sessionId,
           outputLength: result.output?.length || 0,
+          cloudOnly: this.config.skipWorkspaceSync,
         });
       }
 
