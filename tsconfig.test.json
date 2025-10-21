@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "paths": {
+      "@testbase/agents-core": ["./src/index.ts"],
+      "@testbase/agents-core/_shims": ["./src/shims/shims-node.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["dist/**"]
+}

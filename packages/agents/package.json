@@ -1,0 +1,50 @@
+{
+  "name": "computer-agents",
+  "repository": "https://github.com/testbasehq/computer-agents",
+  "homepage": "https://github.com/testbasehq/computer-agents",
+  "version": "0.1.0",
+  "description": "Build computer-use agents that write code, run tests, and deploy apps. Seamless local and cloud execution with automatic session continuity.",
+  "author": "Testbase",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "prebuild": "tsx ../../scripts/embedMeta.ts",
+    "build": "tsc",
+    "build-check": "tsc --noEmit -p ./tsconfig.test.json"
+  },
+  "dependencies": {
+    "computer-agents-core": "workspace:*",
+    "computer-agents-openai": "workspace:*"
+  },
+  "keywords": [
+    "computer-agents",
+    "codex",
+    "agents",
+    "ai",
+    "automation",
+    "code-generation",
+    "computer-use",
+    "openai"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "zod": "^3.25.40"
+  },
+  "peerDependencies": {
+    "zod": "^3.25.40"
+  },
+  "files": [
+    "dist"
+  ],
+  "typesVersions": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

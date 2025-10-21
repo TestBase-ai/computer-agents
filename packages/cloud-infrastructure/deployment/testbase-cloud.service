@@ -1,0 +1,25 @@
+[Unit]
+Description=Testbase Cloud Agent Server
+After=network.target
+
+[Service]
+Type=simple
+User=testbase
+WorkingDirectory=/opt/testbase-cloud
+Environment="NODE_ENV=production"
+Environment="PORT=8080"
+Environment="DEBUG=false"
+EnvironmentFile=-/opt/testbase-cloud/.env
+ExecStart=/usr/bin/node dist/server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=testbase-cloud
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+packages:
+  - packages/agents-core
+  - packages/agents
+  - packages/agents-openai
+  - packages/cloud-infrastructure
+  - examples/testbase
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp
+
+publishBranch: main

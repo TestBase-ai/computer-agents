@@ -1,0 +1,119 @@
+{
+  "name": "computer-agents-core",
+  "repository": "https://github.com/testbasehq/computer-agents",
+  "homepage": "https://github.com/testbasehq/computer-agents",
+  "version": "0.1.0",
+  "description": "Core implementation for computer-agents SDK. Build computer-use agents with seamless local and cloud execution.",
+  "author": "Testbase",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "tsx ../../scripts/embedMeta.ts",
+    "build": "tsc",
+    "build-check": "tsc --noEmit -p ./tsconfig.test.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./model": {
+      "types": "./dist/model.d.ts",
+      "require": "./dist/model.js",
+      "import": "./dist/model.mjs"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "require": "./dist/utils/index.js",
+      "import": "./dist/utils/index.mjs"
+    },
+    "./extensions": {
+      "types": "./dist/extensions/index.d.ts",
+      "require": "./dist/extensions/index.js",
+      "import": "./dist/extensions/index.mjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/types/index.js",
+      "import": "./dist/types/index.mjs"
+    },
+    "./_shims": {
+      "workerd": {
+        "types": "./dist/shims/shims-workerd.d.ts",
+        "require": "./dist/shims/shims-workerd.js",
+        "import": "./dist/shims/shims-workerd.mjs"
+      },
+      "browser": {
+        "types": "./dist/shims/shims-browser.d.ts",
+        "require": "./dist/shims/shims-browser.js",
+        "import": "./dist/shims/shims-browser.mjs"
+      },
+      "node": {
+        "types": "./dist/shims/shims-node.d.ts",
+        "require": "./dist/shims/shims-node.js",
+        "import": "./dist/shims/shims-node.mjs"
+      },
+      "types": "./dist/shims/shims.d.ts",
+      "require": "./dist/shims/shims.js",
+      "import": "./dist/shims/shims.mjs"
+    }
+  },
+  "keywords": [
+    "computer-agents",
+    "codex",
+    "agents",
+    "ai",
+    "automation",
+    "computer-use",
+    "openai"
+  ],
+  "license": "MIT",
+  "optionalDependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2"
+  },
+  "dependencies": {
+    "@openai/codex-sdk": "^0.47.0",
+    "debug": "^4.4.0",
+    "openai": "^5.20.2"
+  },
+  "peerDependencies": {
+    "zod": "^3.25.40"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "model": [
+        "dist/model.d.ts"
+      ],
+      "utils": [
+        "dist/utils/index.d.ts"
+      ],
+      "extensions": [
+        "dist/extensions/index.d.ts"
+      ],
+      "types": [
+        "dist/types/index.d.ts"
+      ],
+      "_shims": [
+        "dist/shims/shims-node.d.ts"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "zod": "^3.25.40"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

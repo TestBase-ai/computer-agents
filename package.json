@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "computer-agents",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "pnpm --filter computer-agents-core build",
+    "clean": "rm -rf node_modules && pnpm --filter computer-agents-core exec rm -rf dist",
+    "test": "pnpm --filter computer-agents-core test"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^22.16.3",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "execa": "^9.6.0",
+    "husky": "^9.1.7",
+    "playwright": "^1.55.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "tsc-multi": "^1.1.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.44.1",
+    "verdaccio": "^6.1.6",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "vite": "^6.3.6"
+  }
+}
