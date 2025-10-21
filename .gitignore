@@ -149,3 +149,33 @@ bundled/
 
 .wrangler/
 .dev.vars
+
+# Test artifacts
+**/tests/tmp/
+*.db
+*.sqlite
+*.sqlite3
+
+# Build artifacts that shouldn't be committed
+FIX_SUMMARY.md
+test-package-exports.mjs
+test-codex-loading.mjs
+
+# Internal documentation (not for public repo)
+API_DOCUMENTATION.md
+API_KEY_SYSTEM_COMPLETE.md
+API_KEY_TESTING_RESULTS.md
+API_KEY_MANAGEMENT.md
+BILLING.md
+*INTERNAL*.md
+AUTHENTICATION-UPDATE.md
+PHASE-2-COMPLETE.md
+PRE_PUBLISH_CHECKLIST.md
+REFACTORING_SUMMARY.md
+RENAME_COMPLETE.md
+REPUBLISH_GUIDE.md
+SESSION-SUMMARY.md
+TESTING-SUMMARY.md
+packages/cloud-infrastructure/API_KEY_MANAGEMENT.md
+packages/cloud-infrastructure/BILLING.md
+packages/cloud-infrastructure/BILLING_SYSTEM_COMPLETE.md
