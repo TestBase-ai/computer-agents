@@ -5,7 +5,7 @@ import {
   RuntimeEventEmitter,
   EventEmitter,
   EventEmitterEvents,
-} from '@testbase/agents-core/_shims';
+} from 'computer-agents-core/_shims';
 import { TextOutput, UnknownContext } from './types';
 import * as protocol from './types/protocol';
 

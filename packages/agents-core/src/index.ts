@@ -1,7 +1,7 @@
 import { addTraceProcessor } from './tracing';
 import { defaultProcessor } from './tracing/processor';
 
-export { RuntimeEventEmitter } from '@testbase/agents-core/_shims';
+export { RuntimeEventEmitter } from 'computer-agents-core/_shims';
 export {
   Agent,
   AgentConfiguration,

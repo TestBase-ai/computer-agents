@@ -4,7 +4,7 @@ import logger from '../logger';
 import {
   timer as _timer,
   isTracingLoopRunningByDefault,
-} from '@testbase/agents-core/_shims';
+} from 'computer-agents-core/_shims';
 import type { Timeout, Timer } from '../shims/interface';
 import { tracing } from '../config';
 

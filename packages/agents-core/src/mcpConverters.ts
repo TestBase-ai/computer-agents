@@ -9,7 +9,7 @@
 import type { McpServerConfig } from './mcpConfig';
 import { isStdioMcpServer } from './mcpConfig';
 import type { MCPServer } from './mcp';
-import { MCPServerStdio, MCPServerSSE } from '@testbase/agents-core/_shims';
+import { MCPServerStdio, MCPServerSSE } from 'computer-agents-core/_shims';
 
 /**
  * Convert unified MCP config to MCPServer instance for LLM agents.

@@ -4,7 +4,7 @@ export { EventEmitter, EventEmitterEvents } from './interface';
 import { EventEmitter, Timeout, Timer } from './interface';
 
 // Use function instead of exporting the value to prevent
-// circular dependency resolution issues caused by other exports in '@testbase/agents-core/_shims'
+// circular dependency resolution issues caused by other exports in 'computer-agents-core/_shims'
 export function loadEnv(): Record<string, string | undefined> {
   return {};
 }

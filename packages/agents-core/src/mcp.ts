@@ -4,7 +4,7 @@ import {
   MCPServerStdio as UnderlyingMCPServerStdio,
   MCPServerStreamableHttp as UnderlyingMCPServerStreamableHttp,
   MCPServerSSE as UnderlyingMCPServerSSE,
-} from '@testbase/agents-core/_shims';
+} from 'computer-agents-core/_shims';
 import { getCurrentSpan, withMCPListToolsSpan } from './tracing';
 import { logger as globalLogger, getLogger, Logger } from './logger';
 import debug from 'debug';

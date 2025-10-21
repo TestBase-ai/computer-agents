@@ -1,4 +1,4 @@
-import { randomUUID } from '@testbase/agents-core/_shims';
+import { randomUUID } from 'computer-agents-core/_shims';
 
 /**
  * Generate an ISO 8601 timestamp of the current time.

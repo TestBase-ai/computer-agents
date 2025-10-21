@@ -5,8 +5,8 @@
     "rootDir": "./src",
     "module": "CommonJS",
     "paths": {
-      "@testbase/agents-core": ["./src/index.ts"],
-      "@testbase/agents-core/_shims": ["./src/shims/shims-node.ts"]
+      "computer-agents-core": ["./src/index.ts"],
+      "computer-agents-core/_shims": ["./src/shims/shims-node.ts"]
     }
   },
   "exclude": ["dist/**", "test/**", "tests/**", "vitest.config.ts"]
