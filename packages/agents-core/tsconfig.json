@@ -9,5 +9,5 @@
       "computer-agents-core/_shims": ["./src/shims/shims-node.ts"]
     }
   },
-  "exclude": ["dist/**", "test/**", "tests/**", "vitest.config.ts"]
+  "exclude": ["dist/**", "test/**", "tests/**", "examples/**", "vitest.config.ts"]
 }
